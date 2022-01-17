@@ -39,6 +39,7 @@ function createBingoBoard(rowLength = 5) {
     }
   }
   printBoard(board)
+  resetNums()
   return board
 }
 
@@ -58,7 +59,6 @@ function printBoard(board) {
 
 //c. play bingo function : the main function - works until one of the player wins. using an interval or while loop .
 function playBingo() {
-  resetNums()
   var isVictory = false
   var calledNum = drawNum()
   // while (!isVictory){
@@ -139,6 +139,7 @@ function greetPlayer(player, accomplishment) {
 // e.2: resetNums function : initializing the global array gNums
 function resetNums() {
   //initialize nums from 1 - 99:
+  gNums = []
   for (var i = 1; i <= NUMS_LENGTH; i++) {
     gNums.push(i)
   }
