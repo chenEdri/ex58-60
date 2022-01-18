@@ -3,11 +3,11 @@
 console.log('Ex 60 Solution');
 
 const TABLE_LENGTH = 10
+const DEATH = '🪦'
+const LIFE = '👼🏼'
+const MAXGEN = 10
 
 var gBoard = []
-var DEATH = '🪦'
-var LIFE = '👼🏼'
-var MAXGEN = 10
 var gGenCnt = 2
 makeFirstBoard()
 var interID = setInterval(play, 1000)

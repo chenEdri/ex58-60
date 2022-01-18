@@ -1,5 +1,8 @@
 'use strict'
-console.log('ex59 - bingo! ')
+
+console.log('EX 59')
+console.log('Bingo')
+// CR needed ✏️ sended to yaron weiting for approval
 
 // initialize nums array to get numbers from:
 const NUMS_LENGTH = 100
@@ -10,32 +13,38 @@ var gPlayers = [
     name: 'miki',
     hitCounts: 0,
     board: createBingoBoard(Math.sqrt(NUMS_LENGTH)),
+    accomplishments: [],
   },
   {
     name: 'shuki',
     hitCounts: 0,
     board: createBingoBoard(Math.sqrt(NUMS_LENGTH)),
+    accomplishments: [],
   },
 ]
 
-// interval for the game : time
-var interval = setInterval(playBingo, 20)
+// Interval for the game :
+var playInterval = setInterval(playBingo, 20)
 
 //a. create board function : initialize the board for each user
 
 function createBingoBoard(rowLength = 5) {
   // nums array for creating the board:
   resetNums()
-  //start to build the table :
+  //start to build the board:
   var board = []
   for (var i = 0; i < rowLength; i++) {
     board.push([])
     for (var j = 0; j < rowLength; j++) {
+      //option 1:
       // adding random index from nums that points to a specific value that didn't got yet
-      var randomIdx = getRandomInt(0, gNums.length - 1)
-      board[i].push({ value: gNums[randomIdx], isHit: false })
-      // removing the number from gNums to assure it won't pick again
-      gNums.splice(randomIdx, 1)
+      //   var randomIdx = getRandomInt(0, gNums.length - 1)
+      //   board[i].push({ value: gNums[randomIdx], isHit: false })
+      //   // removing the number from gNums to assure it won't pick again
+      //   gNums.splice(randomIdx, 1)
+
+      // option 2: After they actualized the drawNum function :
+      board[i].push({ value: drawNum(), isHit: false })
     }
   }
   printBoard(board)
@@ -43,7 +52,7 @@ function createBingoBoard(rowLength = 5) {
   return board
 }
 
-// b. print board function: priniting the board to the console
+// b. print board function: priniting the board values to the console
 
 function printBoard(board) {
   var boardNums = []
@@ -57,18 +66,18 @@ function printBoard(board) {
   console.table(boardNums)
 }
 
-//c. play bingo function : the main function - works until one of the player wins. using an interval or while loop .
+//c. play bingo function : the main function - works until one of the player wins. using an playInterval or while loop .
 function playBingo() {
   var isVictory = false
   var calledNum = drawNum()
-  // while (!isVictory){
+  // while (!isVictory){ // before using interval
   for (var i = 0; !isVictory && i < gPlayers.length; i++) {
     var player = gPlayers[i]
     markBoard(player, calledNum)
     isVictory = checkBingo(player)
     if (isVictory) {
       greetPlayer(player, 'all the board!')
-      clearInterval(interval)
+      clearInterval(playInterval)
       //break
     }
     //}
@@ -87,20 +96,21 @@ function drawNum() {
   return num[0]
 }
 
-// d. markBoard function : mark a specific cell the player has the same value on his board and printing the board at the
+// d. markBoard function : mark a specific cell if the player have the same value on his board
+// and then call to printBoard in order to show the changes
 function markBoard(player, calledNum) {
   var { board } = player
   for (var i = 0; i < board.length; i++) {
     for (var j = 0; j < board[i].length; j++) {
       // check if there is a match between cell and calledNum :
       var currCell = board[i][j]
-      //option 1: if we do not get out the number from global array - called numbers can be duplicated:
+      //option 1: if numbers can be duplicated:
       //   if (calledNum === currCell.value && !currCell.isHit) {
       //     currCell.isHit = true
       //     hitCounts++
       //   }
 
-      //option 2: if there is an global array - numbers cannot be duplicated
+      //option 2: if there is a global array - numbers cannot be duplicated
       if (calledNum === currCell.value) {
         currCell.isHit = true
         player.hitCounts++
@@ -112,7 +122,7 @@ function markBoard(player, calledNum) {
   }
 }
 
-//e. checkBingo function : check whether the player finished parts of the board and returns boolan wheather he finished all of it 
+//e. checkBingo function : check whether the player finished parts of the board and returns boolan wheather he finished all of it
 
 function checkBingo(player) {
   // without board checking:
@@ -120,14 +130,24 @@ function checkBingo(player) {
 
   // with board checking :
   var { board } = player
-  if (checkMainDiagonal(board)) greetPlayer(player, 'Main diagonal cpmpleted!')
-  if (checkSecDiagonal(board))
-    greetPlayer(player, 'Secondary diagonal cpmpleted!')
-  for (var i = 0; i < board.length; i++) {
-    if (checkRow(board, i)) greetPlayer(player, ' row- ' + i + ' cpmpleted!')
-    if (checkCol(board, i)) greetPlayer(player, ' col- ' + i + ' cpmpleted!')
+  if (checkMainDiagonal(board) && !player.accomplishments.includes('mainD')) {
+    greetPlayer(player, 'Main diagonal cpmpleted!')
+    player.accomplishments.push('mainD')
   }
-  console.log('player.hitCounts', player.hitCounts)
+  if (checkSecDiagonal(board) && !player.accomplishments.includes('secD')) {
+      greetPlayer(player, 'Secondary diagonal cpmpleted!')
+      player.accomplishments.push('secD')  
+  }
+  for (var i = 0; i < board.length; i++) {
+    if (checkRow(board, i) && !player.accomplishments.includes('row'+i)) {
+        greetPlayer(player, ' row- ' + i + ' cpmpleted!')
+        player.accomplishments.push('row'+i)
+    }
+    if (checkCol(board, i) && !player.accomplishments.includes('col'+i)) {
+        greetPlayer(player, ' col- ' + i + ' cpmpleted!')
+        player.accomplishments.push('col'+i)
+    }
+  }
   return player.hitCounts === NUMS_LENGTH
 }
 
